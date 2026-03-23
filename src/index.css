@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #1a4731;
+  --color-primary-light: #2d6a4f;
+  --color-accent: #d4a853;
+  --color-accent-light: #f0c97a;
+  --color-earth: #8b5e3c;
+  --color-cream: #faf7f2;
+  --color-charcoal: #1c1c1c;
+  --color-mist: #e8f0eb;
+  --color-white: #ffffff;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-charcoal);
+  font-family: "DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji";
+}
+
+/* Avoid interfering with Lenis (never overflow hidden on body) */
+html {
+  scroll-behavior: auto;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Hide scrollbars where we intentionally use horizontal scroll. */
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Utility: clamp to available viewport safely */
+.vh100 {
+  height: 100svh;
+}
+
+/* Decorative subtle leaf pattern */
+.leaf-texture {
+  background-image: radial-gradient(circle at 10% 10%, rgba(212, 168, 83, 0.12), transparent 35%),
+    radial-gradient(circle at 90% 30%, rgba(45, 106, 79, 0.12), transparent 40%),
+    radial-gradient(circle at 20% 90%, rgba(139, 94, 60, 0.08), transparent 45%);
+}
+
+/* Marquee + carousel */
+.marquee {
+  will-change: transform;
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.marquee-left {
+  animation: marquee-left 28s linear infinite;
+}
+
+.marquee-right {
+  animation: marquee-right 28s linear infinite;
+}
+
+/* Accessibility helpers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respect reduced motion globally (covers Tailwind + our keyframes). */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
