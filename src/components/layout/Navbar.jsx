@@ -20,9 +20,15 @@ export default function Navbar() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(true);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 10);
+      // Switch text to dark once user scrolls past ~85% of viewport height
+      setHeroVisible(y < window.innerHeight * 0.85);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -89,9 +95,6 @@ export default function Navbar() {
                 <div className={scrolled ? "text-primary font-display text-lg font-semibold" : "text-white font-display text-lg font-semibold"}>
                   {SITE.name}
                 </div>
-                <div className={scrolled ? "text-charcoal/70 text-sm font-body" : "text-white/80 text-sm font-body"}>
-                  {SITE.tagline}
-                </div>
               </div>
             </button>
 
@@ -102,8 +105,10 @@ export default function Navbar() {
                   type="button"
                   onClick={() => onNavClick(item.key, item.to)}
                   className={[
-                    "font-body text-sm transition-colors",
-                    scrolled ? "text-charcoal/80 hover:text-primary" : "text-white/90 hover:text-white"
+                    "font-body text-sm font-bold transition-colors",
+                    heroVisible
+                      ? "text-white hover:text-white/70"
+                      : "text-black hover:text-primary"
                   ].join(" ")}
                 >
                   {item.label}
@@ -142,7 +147,6 @@ export default function Navbar() {
                 </div>
                 <div>
                   <div className="text-primary font-display text-lg font-semibold">{SITE.name}</div>
-                  <div className="text-charcoal/70 text-sm font-body">{SITE.tagline}</div>
                 </div>
               </div>
               <button

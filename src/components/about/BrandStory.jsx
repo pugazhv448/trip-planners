@@ -18,7 +18,7 @@ export default function BrandStory() {
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <div className="lg:col-span-2">
-            <div className="rounded-card border border-black/5 bg-white shadow-card p-7 sm:p-9" data-reveal>
+            <div className="rounded-card pseudo-border bg-white shadow-card p-7 sm:p-9" data-reveal>
               <div className="font-body text-sm text-primary-light font-semibold uppercase tracking-wide">
                 Local operator for real wilderness comfort
               </div>
@@ -67,7 +67,7 @@ export default function BrandStory() {
             ].map((p) => {
               const Icon = p.icon;
               return (
-                <div key={p.title} className="bg-white rounded-card border border-black/5 shadow-card p-5" data-reveal>
+                <div key={p.title} className="bg-white rounded-card pseudo-border shadow-card p-5" data-reveal>
                   <div className="flex items-start gap-3">
                     <div className="h-11 w-11 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                       <Icon size={20} />
@@ -97,7 +97,7 @@ export default function BrandStory() {
             ].map((p) => {
               const Icon = p.icon;
               return (
-                <div key={p.title} className="bg-white rounded-card border border-black/5 shadow-card p-6 text-center" data-reveal>
+                <div key={p.title} className="bg-white rounded-card pseudo-border shadow-card p-6 text-center" data-reveal>
                   <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
                     <Icon size={20} />
                   </div>

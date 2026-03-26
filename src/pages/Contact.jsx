@@ -91,7 +91,7 @@ export default function Contact() {
                   href={whatsappHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-between gap-4 rounded-card bg-white/10 border border-white/15 p-4 hover:bg-white/15 transition-colors"
+                  className="inline-flex items-center justify-between gap-4 rounded-card bg-white/10 pseudo-border p-4 hover:bg-white/15 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <MessageCircle size={18} />
@@ -103,17 +103,17 @@ export default function Contact() {
                   <div className="text-white/80 text-sm font-body">Tap</div>
                 </a>
 
-                <div className="rounded-card bg-white/10 border border-white/15 p-4">
+                <div className="rounded-card bg-white/10 pseudo-border p-4">
                   <div className="text-xs font-body text-white/80">Pickup & Drop</div>
                   <div className="mt-1 font-body font-semibold">Kozhikode Railway Station / Kalpetta</div>
                 </div>
 
-                <div className="rounded-card bg-white/10 border border-white/15 p-4">
+                <div className="rounded-card bg-white/10 pseudo-border p-4">
                   <div className="text-xs font-body text-white/80">Station</div>
                   <div className="mt-1 font-body font-semibold">Kozhikode</div>
                 </div>
 
-                <div className="rounded-card bg-white/10 border border-white/15 p-4">
+                <div className="rounded-card bg-white/10 pseudo-border p-4">
                   <div className="text-xs font-body text-white/80">Instagram</div>
                   <a href={SITE.instagram} target="_blank" rel="noreferrer" className="mt-1 block font-body font-semibold hover:underline">
                     @wayanad_wild_ways

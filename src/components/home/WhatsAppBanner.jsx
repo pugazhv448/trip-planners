@@ -22,33 +22,32 @@ export default function WhatsAppBanner() {
         >
           <div className="absolute inset-0 opacity-20 leaf-texture pointer-events-none" />
 
-          <div className="relative p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
+          <div className="relative p-8 sm:p-12 cta-section-flex">
+            <div className="text-left">
               <div className="font-accent text-accent-light italic text-xl sm:text-2xl">Ready to Explore Wayanad?</div>
-              <div className="mt-3 text-white font-display text-3xl sm:text-5xl font-bold leading-tight">
+              <div className="mt-4 text-white font-display text-3xl sm:text-6xl font-bold leading-[1.1] max-w-2xl">
                 We plan your trip, you just enjoy the wild.
               </div>
-              <div className="mt-3 text-white/85 font-body text-sm sm:text-base max-w-xl">
-                Message us on WhatsApp and we'll plan your perfect trip.
+              <div className="mt-6 text-white/70 font-body text-base sm:text-lg max-w-xl leading-relaxed">
+                Message us on WhatsApp and we'll plan your perfect trip. Limited slots available for this season.
               </div>
             </div>
 
-            <div className="flex flex-col items-center md:items-end gap-3">
+            <div className="flex flex-col items-start sm:items-end gap-5">
               <a
                 href={whatsappHref}
                 target="_blank"
                 rel="noreferrer"
-                className="relative inline-flex items-center gap-3 rounded-pill bg-accent px-6 py-4 font-body font-semibold text-charcoal shadow-card-hover"
+                className="relative inline-flex items-center gap-3 rounded-full bg-accent px-8 py-5 font-body font-bold text-charcoal shadow-2xl hover:bg-accent-light transition-all white-space-nowrap min-w-max"
                 style={{ touchAction: "manipulation" }}
               >
-                <span className="absolute -inset-3 rounded-full animate-ping bg-accent/25" />
-                <Phone size={18} />
-                <span className="text-sm sm:text-base">WhatsApp</span>
-                <span className="hidden sm:inline text-charcoal/90 font-semibold">{displayNumber}</span>
+                <span className="absolute -inset-2 rounded-full animate-ping bg-accent/20" />
+                <Phone size={20} fill="currentColor" />
+                <span className="text-base sm:text-lg">WhatsApp {displayNumber}</span>
               </a>
 
-              <div className="text-white/80 font-body text-xs sm:text-sm">
-                Limited slots fill fast. Tap to book now.
+              <div className="text-white/50 font-body text-sm font-medium">
+                🌿 Real-time support | Instant booking confirmation
               </div>
             </div>
           </div>

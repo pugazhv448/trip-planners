@@ -7,7 +7,7 @@ function MarqueeRow({ items, direction }) {
   const doubled = [...items, ...items];
   return (
     <div
-      className="overflow-hidden rounded-card border border-black/5 bg-white shadow-card"
+      className="overflow-hidden rounded-card pseudo-border bg-white shadow-card"
       data-reveal
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -20,9 +20,19 @@ function MarqueeRow({ items, direction }) {
           {doubled.map((img, idx) => (
             <div
               key={`${img.id}-${idx}`}
-              className="group relative w-[210px] sm:w-[230px] h-40 sm:h-44 overflow-hidden"
+              className="group relative w-[210px] sm:w-[230px] h-40 sm:h-44 overflow-hidden flex-shrink-0"
             >
-              <img src={img.src} alt={img.caption} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img
+                src={img.src}
+                alt={img.caption || "Wayanad Visual Story"}
+                loading="lazy"
+                decoding="async"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80";
+                }}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute bottom-3 left-3 right-3">
                 <div className="text-white font-body text-xs sm:text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">

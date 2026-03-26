@@ -4,9 +4,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ["\"Playfair Display\"", "serif"],
-        body: ["\"DM Sans\"", "system-ui", "Segoe UI", "Roboto", "Helvetica", "Arial", "sans-serif"],
-        accent: ["\"Italiana\"", "cursive"]
+        display: ["var(--font-display)", "Georgia", "serif"],
+        body: ["var(--font-body)", "sans-serif"],
+        accent: ["var(--font-display)", "Georgia", "serif"]
       },
       colors: {
         primary: "var(--color-primary)",

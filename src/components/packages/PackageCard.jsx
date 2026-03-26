@@ -20,11 +20,21 @@ export default function PackageCard({ pkg }) {
 
   return (
     <div
-      className="bg-white rounded-card border border-black/5 shadow-card hover:shadow-card-hover transition-shadow overflow-hidden"
+      className="bg-white rounded-[2rem] pseudo-border shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden"
       data-reveal
     >
-      <div className="relative">
-        <img src={pkg.heroImage} alt={pkg.name} className="h-56 sm:h-64 w-full object-cover" />
+      <div className="relative aspect-video overflow-hidden bg-neutral-200">
+        <img
+          src={pkg.heroImage}
+          alt={`${pkg.name} - Wayanad tourism experience`}
+          loading="lazy"
+          decoding="async"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80";
+          }}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+        />
         <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(26,71,49,0.85) 100%)" }} />
         <div className="absolute top-4 left-4">
           <div className="inline-flex items-center rounded-pill bg-accent-light px-4 py-2 text-charcoal font-body text-xs sm:text-sm font-semibold">
@@ -73,7 +83,7 @@ export default function PackageCard({ pkg }) {
           <div className="rounded-card bg-accent/5 border border-accent/15 p-5">
             <div className="font-display text-xl font-bold text-accent">What's Not Included</div>
             <ul className="mt-4 space-y-3">
-              {pkg.exclusions.map((exc) => (
+              {pkg.exclusions?.map((exc) => (
                 <li key={exc} className="flex items-start gap-3">
                   <XCircle className="text-accent mt-0.5" size={18} />
                   <span className="font-body text-sm text-charcoal/80 leading-relaxed">{exc}</span>

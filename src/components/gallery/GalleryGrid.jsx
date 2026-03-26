@@ -47,16 +47,24 @@ export default function GalleryGrid() {
         })}
       </div>
 
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4" data-reveal>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal>
         {filtered.map((img) => (
-          <div key={img.id} className="break-inside-avoid mb-4">
-            <div className="group relative rounded-image overflow-hidden border border-black/5">
-              <img src={img.src} alt={img.caption} className="w-full h-auto transition-transform duration-500 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-3 left-3 right-3">
-                <div className="text-white font-body text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {img.caption}
-                </div>
+          <div key={img.id} className="relative group rounded-2xl overflow-hidden pseudo-border aspect-[4/5] bg-neutral-100" data-reveal>
+            <img
+              src={img.src}
+              alt={img.caption || "Wayanad Visual Story"}
+              loading="lazy"
+              decoding="async"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80";
+              }}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+              <div className="text-white font-body text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                {img.caption}
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ export const PACKAGES = [
     priceLabel: "₹4,000 / person",
     badge: "Most Popular",
     bestFor: ["Couples", "Friends", "First-timers"],
-    heroImage: "https://images.unsplash.com/photo-1580889240950-9dc1b1e40c80?w=800",
+    heroImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
     inclusions: [
       "Accommodation (Couple Cottage / Bachelor Property / Budget)",
       "Pickup & drop from Kozhikode Railway Station or Kalpetta",
@@ -18,10 +18,9 @@ export const PACKAGES = [
       "Campfire with live music"
     ],
     exclusions: [
-      "Personal shopping & expenses",
-      "Optional zipline (extra charge)",
-      "900 Kandi Glass Bridge (extra charge)",
-      "Any other tickets not mentioned"
+      "Zipline tickets",
+      "Soft drinks and alcohol",
+      "Personal shopping and insurance"
     ],
     itinerary: [
       {
@@ -64,7 +63,7 @@ export const PACKAGES = [
     priceLabel: "₹5,000 / person",
     badge: "Best Value",
     bestFor: ["Families", "Couples", "Groups"],
-    heroImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800",
+    heroImage: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80",
     inclusions: [
       "Accommodation (Couple Cottage / Bachelor Property / Budget)",
       "Pickup & drop from Kozhikode Railway Station or Kalpetta",
@@ -75,11 +74,9 @@ export const PACKAGES = [
       "2× Campfire nights with live music"
     ],
     exclusions: [
-      "Personal shopping & expenses",
-      "Optional zipline (extra charge)",
-      "900 Kandi Glass Bridge (extra charge)",
-      "Karapuzha Lake boating (extra charge)",
-      "Any other tickets not mentioned"
+      "Zipline tickets",
+      "Personal laundry",
+      "Travel insurance"
     ],
     itinerary: [
       {

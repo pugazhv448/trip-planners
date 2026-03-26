@@ -1,183 +1,212 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import gsap from "gsap";
+import React, { useRef, useEffect, useState } from "react";
+import { gsap } from "gsap";
 import { ChevronDown } from "lucide-react";
 import MagneticButton from "../ui/MagneticButton";
 import { SITE } from "../../data/siteConfig";
 import { useSmoothScrollContext } from "../ui/SmoothScrollProvider";
-import { usePrefersReducedMotion } from "../../animations/deviceConfig";
-import { useParallax } from "../../animations/useParallax";
-import ParallaxImage from "../ui/ParallaxImage";
-import { usePerformanceMonitor } from "../../animations/usePerformanceMonitor";
 
-const HERO_SLIDES = [
-  {
-    id: "h1",
-    src: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1600",
-    alt: "Wayanad forest and hills"
-  },
-  {
-    id: "h2",
-    src: "https://images.unsplash.com/photo-1500043357865-c6b853a0b23b?w=1600",
-    alt: "Misty waterfall in Kerala"
-  },
-  {
-    id: "h3",
-    src: "https://images.unsplash.com/photo-1526481280695-3c687fd643ed?w=1600",
-    alt: "Tea plantation landscape"
-  },
-  {
-    id: "h4",
-    src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600",
-    alt: "Lake and greenery"
-  }
+const heroImages = [
+  "https://images.unsplash.com/photo-1536431311719-398b6704d4cc?w=1920&q=90&fit=crop&crop=center",
+  "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=90&fit=crop&crop=center",
+  "https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=90&fit=crop&crop=center",
+  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=90&fit=crop&crop=center",
 ];
 
+const SLIDE_DURATION = 5000; // ms per slide
+const FADE_DURATION  = 1.4;  // seconds for GSAP crossfade
+
 export default function HeroSection() {
+  const contentRef  = useRef(null);
+  const layersRef   = useRef([]);
+  const intervalRef = useRef(null);
+  const [current, setCurrent]   = useState(0);
+  const [isReady, setIsReady]   = useState(false);
   const { scrollTo } = useSmoothScrollContext();
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const { allowHeavyMotion } = usePerformanceMonitor();
-  useParallax();
 
-  const [active, setActive] = useState(0);
-  const imgWrapRef = useRef(null);
-  const tweenRef = useRef(null);
+  const whatsappHref = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(
+    "Hi! I want to book the Wild Escape / Deep Wild packages."
+  )}`;
 
-  const whatsappHref = useMemo(() => {
-    const msg = "Hi! I want to book the Wild Escape / Deep Wild packages.";
-    return `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(msg)}`;
+  // ── Preload images then mark ready ──────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all(
+      heroImages.map(
+        (url) =>
+          new Promise((res) => {
+            const img = new Image();
+            img.onload = img.onerror = res;
+            img.src = url;
+          })
+      )
+    ).then(() => {
+      if (!cancelled) setIsReady(true);
+    });
+    return () => { cancelled = true; };
   }, []);
 
+  // ── Entrance animation (text) ────────────────────────────────────────────
   useEffect(() => {
-    if (prefersReducedMotion || !allowHeavyMotion) return;
-    const interval = window.setInterval(() => {
-      setActive((v) => (v + 1) % HERO_SLIDES.length);
-    }, 4000);
-    return () => window.clearInterval(interval);
-  }, [prefersReducedMotion, allowHeavyMotion]);
-
-  useEffect(() => {
-    if (prefersReducedMotion || !allowHeavyMotion) {
-      tweenRef.current?.kill();
-      return;
-    }
-    if (!imgWrapRef.current) return;
-
-    tweenRef.current?.kill();
-    const el = imgWrapRef.current;
-    gsap.set(el, { transformOrigin: "center center" });
-    tweenRef.current = gsap.fromTo(
-      el,
-      { scale: 1.08 },
-      { scale: 1.18, duration: 4, ease: "power1.out" }
+    if (!isReady || !contentRef.current) return;
+    const children = Array.from(contentRef.current.children);
+    gsap.fromTo(
+      children,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1.1,
+        stagger: 0.14,
+        ease: "power3.out",
+        delay: 0.2,
+      }
     );
+  }, [isReady]);
 
-    return () => {
-      tweenRef.current?.kill();
+  // ── Auto-rotate slides (GSAP crossfade) ─────────────────────────────────
+  useEffect(() => {
+    if (!isReady) return;
+
+    const advance = () => {
+      setCurrent((prev) => {
+        const next = (prev + 1) % heroImages.length;
+
+        const outLayer = layersRef.current[prev];
+        const inLayer  = layersRef.current[next];
+        if (!outLayer || !inLayer) return next;
+
+        // Simultaneous crossfade — NO z-index changes.
+        // This prevents the gradient overlay (::after z-index:1) from
+        // being obscured, which was causing the dim/bright glitch.
+        gsap.to(outLayer, {
+          opacity: 0,
+          duration: FADE_DURATION,
+          ease: "power2.inOut",
+        });
+        gsap.fromTo(
+          inLayer,
+          { opacity: 0 },
+          { opacity: 1, duration: FADE_DURATION, ease: "power2.inOut" }
+        );
+
+        return next;
+      });
     };
-  }, [active, prefersReducedMotion, allowHeavyMotion]);
 
-  const onViewPackages = () => {
-    scrollTo("#packages", { offset: 86 });
-  };
+    intervalRef.current = setInterval(advance, SLIDE_DURATION);
+    return () => clearInterval(intervalRef.current);
+  }, [isReady]);
+
+  const handleScrollDown = () => scrollTo("#stats", { offset: 0 });
 
   return (
-    <section className="relative vh100 leaf-texture">
-      {/* Background slide */}
-      {HERO_SLIDES.map((s, idx) => {
-        const isActive = idx === active;
-        return (
+    <section
+      id="hero"
+      className="hero-section bg-black"
+      style={{ position: "relative", height: "100vh", overflow: "hidden" }}
+    >
+      {/* ── Image layers ── */}
+      <div className="hero-image-stack">
+        {heroImages.map((src, i) => (
           <div
-            key={s.id}
-            className={[
-              "absolute inset-0 transition-opacity duration-500",
-              isActive ? "opacity-100" : "opacity-0"
-            ].join(" ")}
-            aria-hidden={!isActive}
-          >
-              <ParallaxImage className="absolute inset-0" speed={0.1}>
-                <div ref={isActive ? imgWrapRef : null} className="absolute inset-0">
-                  <img src={s.src} alt={s.alt} className="h-full w-full object-cover" />
-                </div>
-              </ParallaxImage>
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(26,71,49,0.6) 100%)"
-                }}
-              />
-            </div>
-        );
-      })}
+            key={i}
+            ref={(el) => (layersRef.current[i] = el)}
+            className="hero-img-layer"
+            style={{
+              backgroundImage: `url(${src})`,
+              opacity: i === 0 ? 1 : 0,
+            }}
+          />
+        ))}
+      </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-full flex items-center">
-        <div className="w-full pb-20 sm:pb-24 text-center">
-          <div className="inline-flex items-center gap-3 rounded-pill bg-white/5 border border-white/10 px-4 py-2 mb-6">
-            <span className="font-accent italic text-accent-light text-lg">Welcome to Wayanad</span>
-            <span className="h-1 w-1 rounded-full bg-accent-light/80 hidden sm:block" />
+      {/* ── Cinematic grain & gradient overlay ── */}
+      <div className="hero-grain-overlay" />
+
+      {/* ── Content ── */}
+      <div className="hero-content relative z-10 w-full h-full flex items-center justify-center px-4">
+        <div ref={contentRef} className="hero-content-inner w-full max-w-4xl text-center">
+          <div className="hero-badge inline-flex items-center gap-2 rounded-full border px-4 py-1.5 mb-8">
+            <span className="text-accent-light text-xs sm:text-sm font-semibold tracking-wider uppercase">
+              Premium Tourism Experience
+            </span>
           </div>
 
-          <h1 className="font-display font-bold text-white text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight">
-            Explore Wayanad with Comfort, Adventure & Best Budget Packages
+          <h1 className="hero-title mb-8">
+            Explore Wayanad <br className="hidden sm:block" /> with Wild Ways
           </h1>
 
-          <p className="mt-5 text-white/90 font-body text-sm sm:text-base lg:text-lg max-w-3xl mx-auto">
-            Handpicked Wayanad experiences with cozy stays, scenic sightseeing, Kerala-style meals, and hassle-free pickup
-            from Kozhikode or Kalpetta.
+          <p className="hero-subtitle text-xl sm:text-2xl max-w-2xl mx-auto mb-12 leading-relaxed">
+            A cinematic escape into the heart of nature. Handpicked stays, sacred
+            trails, and authentic Kerala soul.
           </p>
 
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
+          <div className="hero-buttons flex flex-col sm:flex-row items-center justify-center gap-6">
             <MagneticButton
-              className="h-12 sm:h-11 px-6 rounded-pill bg-primary text-white font-body font-semibold text-sm sm:text-base shadow-card-hover"
+              className="w-full sm:w-auto h-16 px-10 rounded-full bg-white text-black font-bold text-lg shadow-2xl hover:bg-neutral-100! transition-none"
               onClick={() => window.open(whatsappHref, "_blank", "noreferrer")}
             >
               Book on WhatsApp
             </MagneticButton>
 
             <MagneticButton
-              className="h-12 sm:h-11 px-6 rounded-pill bg-transparent border border-white/70 text-white font-body font-semibold text-sm sm:text-base"
-              onClick={onViewPackages}
+              className="w-full sm:w-auto h-16 px-10 rounded-full bg-transparent border-2 border-white/40 text-white font-bold text-lg hover:bg-white/10! transition-none backdrop-blur-sm"
+              onClick={() => scrollTo("#packages", { offset: 86 })}
             >
               View Packages
             </MagneticButton>
           </div>
-
-          <div className="mt-4 text-accent-light font-body font-semibold text-sm sm:text-base">
-            🌿 Limited slots — Book your dates now
-          </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* ── Scroll indicator ── */}
       <button
-        type="button"
-        onClick={() => scrollTo("#packages", { offset: 86 })}
-        className="absolute left-1/2 -translate-x-1/2 bottom-8 flex flex-col items-center gap-1 text-white/90"
+        onClick={handleScrollDown}
+        className="absolute left-1/2 -translate-x-1/2 bottom-10 z-20 flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors group"
         aria-label="Scroll down"
       >
-        <ChevronDown className="h-6 w-6 animate-bounce" />
-        <span className="text-xs font-body hidden sm:block">Scroll</span>
+        <span className="text-xs font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity">
+          Discover
+        </span>
+        <ChevronDown size={32} className="animate-bounce" />
       </button>
 
-      {/* Carousel dots */}
-      <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2">
-        {HERO_SLIDES.map((s, idx) => {
-          const activeDot = idx === active;
-          return (
-            <button
-              key={s.id}
-              type="button"
-              onClick={() => setActive(idx)}
-              aria-label={`Go to slide ${idx + 1}`}
-              className={[
-                "h-2.5 rounded-full transition-all duration-300",
-                activeDot ? "w-8 bg-accent-light" : "w-2.5 bg-white/40 hover:bg-white/70"
-              ].join(" ")}
-            />
-          );
-        })}
+      {/* ── Dot indicators ── */}
+      <div className="absolute bottom-10 right-8 z-20 flex flex-col gap-2">
+        {heroImages.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => {
+              clearInterval(intervalRef.current);
+              const outLayer = layersRef.current[current];
+              const inLayer  = layersRef.current[i];
+              if (outLayer && inLayer && i !== current) {
+                gsap.set(inLayer,  { zIndex: 2, opacity: 0 });
+                gsap.to(inLayer,   { opacity: 1, duration: FADE_DURATION, ease: "power2.inOut",
+                  onComplete: () => {
+                    gsap.set(outLayer, { opacity: 0, zIndex: 0 });
+                    gsap.set(inLayer,  { zIndex: 1 });
+                  }
+                });
+                gsap.set(outLayer, { zIndex: 1 });
+              }
+              setCurrent(i);
+            }}
+            aria-label={`Go to slide ${i + 1}`}
+            style={{
+              width: 8,
+              height: i === current ? 24 : 8,
+              borderRadius: 4,
+              background: i === current ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              transition: "height 0.3s ease, background 0.3s ease",
+              display: "block",
+            }}
+          />
+        ))}
       </div>
     </section>
   );
 }
-
